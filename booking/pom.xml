@@ -135,6 +135,22 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.7.1</version> 
+				<configuration>
+					<user>booking</user>
+					<password>booking</password>
+					<schemas>
+						<schema>booking</schema>
+					</schemas>
+					<url>jdbc:mariadb://localhost:3306/booking</url>
+					<locations>
+						<location>filesystem:src/main/resources/migration</location>
+					</locations>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>

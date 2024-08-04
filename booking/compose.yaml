@@ -16,7 +16,5 @@ services:
       - MYSQL_DATABASE=booking
     ports: 
       - '3306:3306'
-  redis:
-    image: 'redis:latest'
-    ports:
-      - '6379'
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
