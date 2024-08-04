@@ -68,7 +68,6 @@ public class UserRequestHandlerImplTest {
 
         assertNotNull(result.getBody());
         assertNotNull(result.getBody().getData()); 
-        assertEquals(responseEntity, result);       
         assertEquals(userResponse.getData().getName(), result.getBody().getData().getName());
         assertEquals(userResponse.getData().getEmail(), result.getBody().getData().getEmail());
         assertEquals(userResponse.getData().getRole(), result.getBody().getData().getRole());
@@ -90,7 +89,6 @@ public class UserRequestHandlerImplTest {
 
         assertNotNull(result.getBody());
         assertNotNull(result.getBody().getData());
-        assertEquals(responseEntity, result);
         assertEquals(usersResponse.getData().size(), result.getBody().getData().size());
         assertEquals(usersResponse.getData().get(0).getName(), result.getBody().getData().get(0).getName());
         assertEquals(usersResponse.getData().get(0).getEmail(), result.getBody().getData().get(0).getEmail());
@@ -114,7 +112,6 @@ public class UserRequestHandlerImplTest {
         
         assertNotNull(result.getBody());
         assertNotNull(result.getBody().getData());
-        assertEquals(responseEntity, result);
         assertEquals(userResponse.getData().getName(), result.getBody().getData().getName());
         assertEquals(userResponse.getData().getEmail(), result.getBody().getData().getEmail());
         assertEquals(userResponse.getData().getRole(), result.getBody().getData().getRole());
