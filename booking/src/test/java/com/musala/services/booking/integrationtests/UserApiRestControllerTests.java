@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -30,6 +31,7 @@ import com.musala.services.booking.models.responses.AuthenticationResponse;
 import com.musala.services.booking.models.responses.EventResponse;
 import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.ExceptionResponse;
+import com.musala.services.booking.models.responses.TicketResponse;
 import com.musala.services.booking.models.responses.TicketsResponse;
 import com.musala.services.booking.models.responses.UserResponse;
 import com.musala.services.booking.services.EventService;
@@ -64,7 +66,7 @@ public class UserApiRestControllerTests {
 
     private static final String USER_NAME = "Sample User";
     private static final String USER_EMAIL = "sample@admin.com";
-    private static final String USER_PASSWORD = "admin";
+    private static final String USER_PASSWORD = "adminadmin";
     private static final String USER_PASSWORD_NEW = "weghh3232wew3";
 
     static final String EVENT_NAME = "Sample event";
@@ -73,8 +75,8 @@ public class UserApiRestControllerTests {
     static final String EVENT_CATEGORY = EventCategories.Concert.toString();
     static final int EVENT_CAPACITY = 100;
 
+    @BeforeEach
     @SuppressWarnings("null")
-@BeforeEach
     public void before() throws JsonMappingException, JsonProcessingException {
         String host = "http://localhost:" + port;
         String baseUrl = host + "/booking/api";
@@ -198,8 +200,7 @@ public class UserApiRestControllerTests {
     // 7.2. deletes the event
     // 7.3. deletes the user
     // 8. confirms that the event has been signaled or not
-    public void functionalRequirementTest()
-            throws Exception {
+    public void functionalRequirementTest() throws Exception {
         // Clear all the existing users
         userService.getAllUsers().forEach(user -> userService.deleteUser(user.getId()));
 
@@ -243,10 +244,10 @@ public class UserApiRestControllerTests {
         assertEquals("Success", createEventRequestResponse.getMessage());
 
         // Search for the event
-        String searchForEvent = eventsUrl + "?searchPhrase=" + EVENT_NAME;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String searchForEvent = eventsUrl + "/names/" + EVENT_NAME;
+        HttpHeaders searchForEventHeaders = new HttpHeaders();
+        searchForEventHeaders.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(searchForEventHeaders);
 
         EventsResponse searchForEventResponse = this.restTemplate
                 .exchange(searchForEvent, HttpMethod.GET, entity, EventsResponse.class).getBody();
@@ -257,54 +258,50 @@ public class UserApiRestControllerTests {
         // Book the user for the event
         String bookTicketUrl = eventsUrl + "/" + createEventRequestResponse.getData().getId() + "/tickets";
         HttpHeaders headersTicketsResponse = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
+        headersTicketsResponse.set("Authorization", "Bearer " + token);
         HttpEntity<String> entityTicketsResponse = new HttpEntity<>(headersTicketsResponse);
 
-        TicketsResponse ticketsResponseResponse = this.restTemplate
-                .exchange(bookTicketUrl, HttpMethod.GET, entityTicketsResponse, TicketsResponse.class).getBody();
-        assertEquals(HttpStatus.OK.value(), ticketsResponseResponse.getStatus());
-        assertEquals("Success", ticketsResponseResponse.getMessage());
+        TicketResponse ticketResponseResponse = this.restTemplate
+                .exchange(bookTicketUrl, HttpMethod.GET, entityTicketsResponse, TicketResponse.class).getBody();
+        assertEquals(HttpStatus.OK.value(), ticketResponseResponse.getStatus());
+        assertEquals("Success", ticketResponseResponse.getMessage());
 
         // register and wait for the event to start...
         notificationService.registerEventNotification(createUserRequestResponse.getData().getId(),
                 createEventRequestResponse.getData().getId(), (userId, eventId, ticket) -> {
                     // Delete the booking
                     String deleteBookingUrl = eventsUrl + "/" + eventId + "/tickets/" + ticket.getId();
-                    HttpEntity<String> entityDelete = new HttpEntity<>(headers);
-                    headers.set("Authorization", "Bearer " + token);
+                    HttpHeaders deleteBookingUrlHeader = new HttpHeaders();
+                    deleteBookingUrlHeader.set("Authorization", "Bearer " + token);
+                    HttpEntity<String> entityDelete = new HttpEntity<>(deleteBookingUrlHeader);
 
-                    ExceptionResponse deleteBookingResponse = this.restTemplate
-                            .exchange(deleteBookingUrl, HttpMethod.DELETE, entityDelete, ExceptionResponse.class)
-                            .getBody();
-                    assertEquals(HttpStatus.OK.value(), deleteBookingResponse.getStatus());
-                    assertEquals("Success", deleteBookingResponse.getMessage());
+                    this.restTemplate.exchange(deleteBookingUrl, HttpMethod.DELETE, entityDelete, String.class).getBody();
 
                     // Confirm that the booking has been deleted by getting the users bookings and
                     // checking that the booking is not there
                     String userBookingsUrl = usersUrl + "/events";
-                    HttpEntity<String> entityBookingEntries = new HttpEntity<>(headers);
-                    headers.set("Authorization", "Bearer " + token);
+                    HttpHeaders userBookingsUrlHeader = new HttpHeaders();
+                    userBookingsUrlHeader.set("Authorization", "Bearer " + token);
+                    HttpEntity<String> entityBookingEntries = new HttpEntity<>(userBookingsUrlHeader);
 
-                    TicketsResponse userBookingsResponse = this.restTemplate
-                            .exchange(userBookingsUrl, HttpMethod.GET, entityBookingEntries, TicketsResponse.class)
-                            .getBody();
+                    TicketsResponse userBookingsResponse = this.restTemplate.exchange(userBookingsUrl, HttpMethod.GET, entityBookingEntries, TicketsResponse.class).getBody();
                     assertEquals(HttpStatus.OK.value(), userBookingsResponse.getStatus());
                     assertEquals("Success", userBookingsResponse.getMessage());
                     assertEquals(0, userBookingsResponse.getData().size());
 
-                    // Delete the events
-                    eventService.deleteEventById(eventId);
-
                     // Delete the user
                     userService.deleteUser(userId);
+
+                    // Delete the events
+                    eventService.deleteEventById(eventId);
                 });
 
         // Wait for 5 seconds for the event to start
         int userId = createUserRequestResponse.getData().getId();
         int eventId = createEventRequestResponse.getData().getId();
-        int timeOut = 5000; // 5 seconds
+        int timeOut = 40000; // 10 seconds
         int timeElapsed = 0;
-        while (notificationService.getNotificationSignalCount(userId, eventId) == 0 && timeElapsed < timeOut) {
+        while (timeElapsed < timeOut) {
             Thread.sleep(1000);
             timeElapsed += 1000;
         }

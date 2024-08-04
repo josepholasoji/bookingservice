@@ -56,6 +56,8 @@ CREATE PROCEDURE delete_user_by_id(
 )
 
 BEGIN
+    DELETE FROM bookings WHERE user_id = p_id;
+    DELETE FROM event_notifications WHERE user_id = p_id;
     DELETE FROM users WHERE id = p_id;
 END$$
 

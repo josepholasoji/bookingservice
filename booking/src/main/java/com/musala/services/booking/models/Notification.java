@@ -10,6 +10,9 @@ public class Notification implements Serializable {
     private Ticket ticket;
     private NotificationHandler handler;
 
+    public Notification() {
+    }
+
     public Notification(int userId, int eventId,  NotificationHandler handler) {
         this.userId = userId;
         this.eventId = eventId;

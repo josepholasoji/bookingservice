@@ -222,11 +222,12 @@ DROP PROCEDURE IF EXISTS get_booking_by_event_id_and_user_id;
 
 CREATE PROCEDURE get_booking_by_event_id_and_user_id(
     IN p_event_id INT,
-    IN p_user_id INT
+    IN p_user_id INT,
+    OUT p_id INT
 )
 
 BEGIN
-    SELECT * FROM bookings WHERE event_id = p_event_id AND user_id = p_user_id;
+    SELECT id INTO p_id FROM bookings WHERE event_id = p_event_id AND user_id = p_user_id;
 END$$
 
 DELIMITER ;

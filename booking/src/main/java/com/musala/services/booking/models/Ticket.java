@@ -24,6 +24,9 @@ public class Ticket implements java.io.Serializable {
     @Column(name = "created_at")
     private Date bookedOn;
 
+    public Ticket() {
+    }
+
     public Ticket(int id, int eventId, int userId, Date bookedOn) {
         this.id = id;
         this.eventId = eventId;

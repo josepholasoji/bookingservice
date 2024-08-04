@@ -65,30 +65,33 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     public Event deleteEventById(int eventId) {
-        return eventsDao.deleteEventById(eventId);
+        Event event = eventsDao.getEventById(eventId);
+        eventsDao.deleteEventById(eventId);
+        return event;
     }
 
-    @Override
+    @Transactional
     public Void deleteBooking(int eventId, int ticketId) {
         return eventsDao.deleteBooking(eventId, ticketId);
     }
 
-    @Override
+    @Transactional
     public Ticket getBooking(int eventId, int userId) {
-        return eventsDao.getBooking(eventId, userId);
+        int id = eventsDao.getBooking(eventId, userId);
+        return new Ticket(id, eventId, userId, new Date());
     }
 
-    @Override
+    @Transactional
     public boolean isEventStarted(int eventId) {
         return eventsDao.isEventStarted(eventId);
     }
 
-    @Override
+    @Transactional
     public int logEventNotification(int eventId, int userId, int notificationLimit) {
         return eventsDao.logEventNotification(eventId, userId, notificationLimit);
     }
 
-    @Override
+    @Transactional
     public boolean isEventAboutToStart(int eventId) {
         return eventsDao.isEventAboutToStart(eventId);
     }

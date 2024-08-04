@@ -32,7 +32,7 @@ public interface EventsDao extends JpaRepository<Event, Integer> {
     public List<Event> searchEventByName(@Param("p_name") String name);
 
     @Procedure(value = "delete_event_by_id")
-    public Event deleteEventById(@Param("p_id") int eventId);
+    public void deleteEventById(@Param("p_id") int eventId);
 
     @Procedure(value = "book_event")
     public Integer bookTickets(@Param("p_event_id") int eventId, @Param("p_user_id") int userId);
@@ -41,7 +41,7 @@ public interface EventsDao extends JpaRepository<Event, Integer> {
     public Void deleteBooking(@Param("p_event_id") int eventId, @Param("p_ticket_id") int ticketId);
 
     @Procedure(value = "get_booking_by_event_id_and_user_id")
-    public Ticket getBooking(@Param("p_event_id") int eventId, @Param("p_user_id") int userId);
+    public Integer getBooking(@Param("p_event_id") int eventId, @Param("p_user_id") int userId);
 
     @Procedure(value = "is_event_started")
     public boolean isEventStarted(@Param("p_event_id") int eventId);

@@ -129,7 +129,7 @@ public class EventServiceImplTest {
     @Test
     public void testDeleteEventById() {
         Event event = new Event(EVENT_NAME + "1", EVENT_DATE, EVENT_DATE, EVENT_DESCRIPTION + "1",  EVENT_CATEGORY, EVENT_CAPACITY);
-        when(eventsDao.deleteEventById(1)).thenReturn(event);
+        when(eventsDao.getEventById(1)).thenReturn(event);
 
         Event result = eventService.deleteEventById(1);
         assertEquals(event, result);

@@ -59,10 +59,14 @@ public class NotificationServiceImpl implements NotificationService {
             if (isEventStarted || isEventAboutToStart) {
                 int notificationLogged = eventService.logEventNotification(notification.getEventId(), notification.getUserId(), notificationLimit);
                 if (notificationLogged < notificationLimit) {
-                    Notification notificationMessage = new Notification(notification.getUserId(), notification.getEventId(), null);
-                    Ticket ticket = eventService.getBooking(notification.getEventId(), notification.getUserId());
-                    notificationMessage.setTicket(ticket);
-                    jmsTemplate.convertAndSend(notificationName, notificationMessage);
+                    try{
+                        Notification notificationMessage = new Notification(notification.getUserId(), notification.getEventId(), null);
+                        Ticket ticket = eventService.getBooking(notification.getEventId(), notification.getUserId());
+                        notificationMessage.setTicket(ticket);
+                        jmsTemplate.convertAndSend(notificationName, notificationMessage);
+                    } catch (Exception e) {
+                        System.out.println("Error sending notification: " + e.getMessage());
+                    }   
                 }
             }
         });

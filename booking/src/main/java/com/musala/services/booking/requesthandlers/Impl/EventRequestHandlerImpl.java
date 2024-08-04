@@ -52,6 +52,7 @@ public class EventRequestHandlerImpl implements EventRequestHandler {
 
     @Override
     public ResponseEntity<Void> deleteBooking(int eventId, int ticketId) {
-        return ResponseEntity.ok(eventService.deleteBooking(eventId, ticketId));
+        eventService.deleteBooking(eventId, ticketId);
+        return ResponseEntity.ok().build();
     }    
 }
