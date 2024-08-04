@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
     // I'm adding this method to ensure there is a always a user with admin role
     // We need to run this like this to ensure that the admin password is hashed in the db
     @PostConstruct
+    @Transactional
     public void onStartup() {
        if(this.getUserByEmail(ADMIN_EMAIL) == null) {
             new User(ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_ROLE);
