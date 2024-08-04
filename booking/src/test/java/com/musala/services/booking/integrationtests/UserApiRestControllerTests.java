@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,7 @@ import com.musala.services.booking.services.NotificationService;
 import com.musala.services.booking.services.UserService;
 
 import ch.qos.logback.core.util.StringUtil;
+import org.springframework.jms.core.JmsTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserApiRestControllerTests {
@@ -52,6 +52,9 @@ public class UserApiRestControllerTests {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    JmsTemplate jmsTemplate;
 
     @Autowired
     NotificationService notificationService;
@@ -70,7 +73,8 @@ public class UserApiRestControllerTests {
     static final String EVENT_CATEGORY = EventCategories.Concert.toString();
     static final int EVENT_CAPACITY = 100;
 
-    @BeforeEach
+    @SuppressWarnings("null")
+@BeforeEach
     public void before() throws JsonMappingException, JsonProcessingException {
         String host = "http://localhost:" + port;
         String baseUrl = host + "/booking/api";
@@ -180,7 +184,8 @@ public class UserApiRestControllerTests {
         assertEquals("Success", response.getMessage());
     }
 
-    @Test
+    @SuppressWarnings("null")
+@Test
     // This test:
     // 1. creates a new user
     // 2. login the new created user and get the auth token to use for the rest of the tests

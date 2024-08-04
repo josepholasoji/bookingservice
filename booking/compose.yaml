@@ -1,6 +1,9 @@
 services:
   active-mq:
     image: 'rmohr/activemq:latest'
+    environment:
+      - 'ACTIVEMQ_ADMIN_LOGIN=booking'
+      - 'ACTIVEMQ_ADMIN_PASSWORD=booking'
     ports:
       - '8161:8161'
       - '61616:61616'

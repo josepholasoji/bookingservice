@@ -37,6 +37,7 @@ public class UserServiceImplTest {
     private static final String USER_PASSWORD = "admin";
     private static final String USER_ROLE = UserCategories.Admin.toString();
 
+    @SuppressWarnings("deprecation")
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);

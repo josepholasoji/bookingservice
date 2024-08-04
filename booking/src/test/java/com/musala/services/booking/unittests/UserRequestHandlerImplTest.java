@@ -38,6 +38,7 @@ public class UserRequestHandlerImplTest {
         userRequestHandler = new UserRequestHandlerImpl(userService);
     }
 
+    @SuppressWarnings("null")
     @Test
     public void testCreateUser() {
         CreateUserRequest request = new CreateUserRequest(name, email, password, role);
@@ -53,6 +54,7 @@ public class UserRequestHandlerImplTest {
         assertEquals(userResponse.getData().getRole(), result.getBody().getData().getRole());
     }
 
+    @SuppressWarnings("null")
     @Test
     public void testGetUserById() {
         User user = new User(name, email, password, role);
@@ -65,12 +67,14 @@ public class UserRequestHandlerImplTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
 
         assertNotNull(result.getBody());
-        assertNotNull(result.getBody().getData());        
+        assertNotNull(result.getBody().getData()); 
+        assertEquals(responseEntity, result);       
         assertEquals(userResponse.getData().getName(), result.getBody().getData().getName());
         assertEquals(userResponse.getData().getEmail(), result.getBody().getData().getEmail());
         assertEquals(userResponse.getData().getRole(), result.getBody().getData().getRole());
     }
 
+    @SuppressWarnings("null")
     @Test
     public void testGetAllUsers() {
         User user1 = new User(name, email, password, role);
@@ -86,6 +90,7 @@ public class UserRequestHandlerImplTest {
 
         assertNotNull(result.getBody());
         assertNotNull(result.getBody().getData());
+        assertEquals(responseEntity, result);
         assertEquals(usersResponse.getData().size(), result.getBody().getData().size());
         assertEquals(usersResponse.getData().get(0).getName(), result.getBody().getData().get(0).getName());
         assertEquals(usersResponse.getData().get(0).getEmail(), result.getBody().getData().get(0).getEmail());
@@ -95,6 +100,7 @@ public class UserRequestHandlerImplTest {
         assertEquals(usersResponse.getData().get(1).getRole(), result.getBody().getData().get(1).getRole());
     }
 
+    @SuppressWarnings("null")
     @Test
     public void testGetUser() {
         User user = new User(name, email, password, role);
@@ -108,6 +114,7 @@ public class UserRequestHandlerImplTest {
         
         assertNotNull(result.getBody());
         assertNotNull(result.getBody().getData());
+        assertEquals(responseEntity, result);
         assertEquals(userResponse.getData().getName(), result.getBody().getData().getName());
         assertEquals(userResponse.getData().getEmail(), result.getBody().getData().getEmail());
         assertEquals(userResponse.getData().getRole(), result.getBody().getData().getRole());
@@ -116,8 +123,8 @@ public class UserRequestHandlerImplTest {
     @Test
     public void testDeleteUser() {
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         ResponseEntity<Void> result = userRequestHandler.deleteUser(id);
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+        assertEquals(responseEntity, result);
     }
 }

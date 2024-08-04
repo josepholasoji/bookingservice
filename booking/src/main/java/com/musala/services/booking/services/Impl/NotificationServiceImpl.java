@@ -1,7 +1,6 @@
 package com.musala.services.booking.services.Impl;
 
 import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,17 +19,19 @@ public class NotificationServiceImpl implements NotificationService {
     @Value("${scheduling.fixedRate}")
     private long fixedRate;
 
-    @Autowired 
-    private EventService eventService;
-
-    @Autowired
-    private JmsTemplate jmsTemplate;
-
     @Value("${eventnotification.limit}")
     private int notificationLimit;
 
     @Value("${eventnotification.name}")
     private String notificationName;
+
+    private EventService eventService;
+    private JmsTemplate jmsTemplate;
+
+    public NotificationServiceImpl(EventService eventService, JmsTemplate jmsTemplate) {
+        this.eventService = eventService;
+        this.jmsTemplate = jmsTemplate;
+    }
 
     private List<Notification> registry = new ArrayList<>(); 
 

@@ -22,7 +22,6 @@ import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.TicketResponse;
 import com.musala.services.booking.requesthandlers.EventRequestHandler;
 
-@SuppressWarnings("null")
 public class EventRequestHandlerTest {
     @Mock
     private EventRequestHandler eventRequestHandler;

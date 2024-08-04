@@ -1,10 +1,6 @@
 package com.musala.services.booking.services.Impl;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 import com.musala.services.booking.exceptions.EventNotFoundException;
