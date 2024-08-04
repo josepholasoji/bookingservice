@@ -12,7 +12,7 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "bookings")
-public class Ticket {
+public class Ticket implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

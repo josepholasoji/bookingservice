@@ -76,4 +76,24 @@ public class EventServiceImpl implements EventService {
     public Void deleteBooking(int eventId, int ticketId) {
         return eventsDao.deleteBooking(eventId, ticketId);
     }
+
+    @Override
+    public Ticket getBooking(int eventId, int userId) {
+        return eventsDao.getBooking(eventId, userId);
+    }
+
+    @Override
+    public boolean isEventStarted(int eventId) {
+        return eventsDao.isEventStarted(eventId);
+    }
+
+    @Override
+    public int logEventNotification(int eventId, int userId, int notificationLimit) {
+        return eventsDao.logEventNotification(eventId, userId, notificationLimit);
+    }
+
+    @Override
+    public boolean isEventAboutToStart(int eventId) {
+        return eventsDao.isEventAboutToStart(eventId);
+    }
 }

@@ -1,8 +1,9 @@
 services:
-  rabbitmq:
-    image: 'rabbitmq:latest'
+  active-mq:
+    image: 'rmohr/activemq:latest'
     ports:
-      - '5672'
+      - '8161:8161'
+      - '61616:61616'
   mariadb:
     image: 'mariadb:latest'
     environment:

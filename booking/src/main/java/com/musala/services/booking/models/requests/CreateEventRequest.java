@@ -5,11 +5,12 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.musala.services.booking.Enums.EventCategories;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class CreateEventRequest {
+public class CreateEventRequest implements java.io.Serializable {
 
     @NotBlank(message = "Event name is mandatory")
     @Size(min = 3, max = 100, message = "Event name must be between 3 and 100 characters")
@@ -20,11 +21,14 @@ public class CreateEventRequest {
     private Date date;
 
     @NotBlank(message = "Event description is mandatory")
+    @Size(min = 3, max = 500, message = "Event description must be between 3 and 1000 characters")
     private String description;
 
     private EventCategories category = EventCategories.Concert;
 
-    private int availableAttendeesCount = 100;
+    @NotNull(message = "Available attendees count is mandatory")
+    @Max(value = 1000, message = "Maximum number of allowed attendees is 1000")
+    private int availableAttendeesCount = 1000;
 
     public CreateEventRequest() {
     }

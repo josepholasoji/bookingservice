@@ -15,12 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.musala.services.booking.Enums.EventCategories;
-import com.musala.services.booking.controllers.requesthandlers.EventRequestHandler;
 import com.musala.services.booking.models.Event;
 import com.musala.services.booking.models.requests.CreateEventRequest;
 import com.musala.services.booking.models.responses.EventResponse;
 import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.TicketResponse;
+import com.musala.services.booking.requesthandlers.EventRequestHandler;
 
 @SuppressWarnings("null")
 public class EventRequestHandlerTest {

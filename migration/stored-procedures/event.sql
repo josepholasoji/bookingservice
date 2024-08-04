@@ -215,3 +215,90 @@ END$$
 
 DELIMITER ;
 
+-- a stored procedure to get a booking by event id and user id
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS get_booking_by_event_id_and_user_id;
+
+CREATE PROCEDURE get_booking_by_event_id_and_user_id(
+    IN p_event_id INT,
+    IN p_user_id INT
+)
+
+BEGIN
+    SELECT * FROM bookings WHERE event_id = p_event_id AND user_id = p_user_id;
+END$$
+
+DELIMITER ;
+
+-- a stored procedure to get if an event has started
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS is_event_started;
+
+CREATE PROCEDURE is_event_started(
+    IN p_event_id INT,
+    OUT p_has_started BOOLEAN
+)
+
+BEGIN
+    DECLARE localStartDate DATE;
+    SELECT start_date INTO localStartDate FROM events WHERE id = p_event_id;
+    IF localStartDate < NOW() THEN
+        SET p_has_started = TRUE;
+    ELSE
+        SET p_has_started = FALSE;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- a stored procedure to get if an event is almost starting
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS is_event_about_to_start;
+
+CREATE PROCEDURE is_event_about_to_start(
+    IN p_event_id INT,
+    OUT p_is_almost_starting BOOLEAN
+)
+
+BEGIN
+    DECLARE localStartDate DATE;
+    SELECT start_date INTO localStartDate FROM events WHERE id = p_event_id;
+    IF localStartDate < NOW() + INTERVAL 10 MINUTE THEN
+        SET p_is_almost_starting = TRUE;
+    ELSE
+        SET p_is_almost_starting = FALSE;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- a stored procedure to log an event notification using the event id and the user id, we firstly get the number of event notifications for the user and the event, if it is greater than p_limit then we return p_limit and skip the insertion, otherwise we insert the event notification
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS log_event_notification;
+
+CREATE PROCEDURE log_event_notification(
+    IN p_event_id INT,
+    IN p_user_id INT,
+    IN p_limit INT,
+    OUT p_count INT
+)
+
+BEGIN
+    DECLARE localCount INT;
+    SELECT COUNT(*) INTO localCount FROM event_notifications WHERE event_id = p_event_id AND user_id = p_user_id;
+    IF localCount >= p_limit THEN
+        SET p_count = p_limit;
+    ELSE
+        INSERT INTO event_notifications(event_id, user_id, created_at, updated_at)
+        VALUES(p_event_id, p_user_id, NOW(), NOW());
+        SET p_count = localCount + 1;
+    END IF;
+END$$
+
+DELIMITER ;
+

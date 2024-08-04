@@ -1,6 +1,6 @@
 package com.musala.services.booking.models.requests;
 
-public class AuthenticationRequest {
+public class AuthenticationRequest implements java.io.Serializable {
     private String username;
     private String password;
 

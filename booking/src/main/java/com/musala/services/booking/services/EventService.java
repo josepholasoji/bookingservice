@@ -9,6 +9,10 @@ public interface EventService {
     public List<Event> getAllEvents(String eventSearchPhrase);
     public Event getEventById(int eventId);
     public Event deleteEventById(int eventId);
+    public Ticket getBooking(int eventId, int userId);
     public Ticket bookTickets(int eventId, int userId);
     public Void deleteBooking(int eventId, int ticketId);
+    public boolean isEventStarted(int eventId);
+    public int logEventNotification(int eventId, int userId, int notificationLimit);
+    public boolean isEventAboutToStart(int eventId);
 } 

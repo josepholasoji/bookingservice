@@ -13,7 +13,7 @@ import com.musala.services.booking.Enums.EventCategories;
 
 @Entity
 @Table(name = "events")
-public class Event {
+public class Event implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
