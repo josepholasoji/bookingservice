@@ -33,9 +33,9 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     @Transactional
     public void onStartup() {
-       if(this.getUserByEmail(ADMIN_EMAIL) == null) {
-            new User(ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_ROLE);
-       }
+    //    if(this.getUserByEmail(ADMIN_EMAIL) == null) {
+    //         new User(ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_ROLE);
+    //    }
     }
 
     @Override
