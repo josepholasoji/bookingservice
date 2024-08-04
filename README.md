@@ -44,7 +44,8 @@ While implementing your solution **please take care of the following requirement
 
 ### Functional requirements
 
-- The REST API methods should be implemented based on the specification provided in the linked swagger file;
+- The REST AP
+I methods should be implemented based on the specification provided in the linked swagger file;
 - Add 2 new methods, one to **view** your booked events and one to **cancel** your reservation _**(both should be authorized)**_;
 - Introduce a periodic task to send notifications for upcoming events to users and create history/audit event log for this.
 - No need for UI;
