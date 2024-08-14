@@ -1,7 +1,5 @@
 package com.musala.services.booking.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musala.services.booking.exceptions.NoUserEventEntryFoundException;
-import com.musala.services.booking.models.Event;
 import com.musala.services.booking.models.requests.CreateUserRequest;
+import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.UserResponse;
 import com.musala.services.booking.requesthandlers.UserRequestHandler;
 
@@ -38,8 +36,8 @@ public class UserController {
        return userRequestHandler.createUser(createUserRequest);
     }
 
-    @GetMapping("/evets")
-    public List<Event> getUserEvents() {
+    @GetMapping("/events")
+    public ResponseEntity<EventsResponse> getUserEvents() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();

@@ -9,7 +9,6 @@ import com.musala.services.booking.models.requests.CreateEventRequest;
 import com.musala.services.booking.models.responses.EventResponse;
 import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.TicketResponse;
-import com.musala.services.booking.repository.UserDao;
 import com.musala.services.booking.requesthandlers.EventRequestHandler;
 import com.musala.services.booking.services.UserService;
 

@@ -59,8 +59,6 @@ public class UserRequestHandlerImplTest {
     public void testGetUserById() {
         User user = new User(name, email, password, role);
         UserResponse userResponse = new UserResponse(user);
-        ResponseEntity<UserResponse> responseEntity = new ResponseEntity<>(userResponse, HttpStatus.OK);
-
         when(userService.getUserById(any(Integer.class))).thenReturn(user);
 
         ResponseEntity<UserResponse> result = userRequestHandler.getUserById(id);
@@ -80,8 +78,6 @@ public class UserRequestHandlerImplTest {
         User user2 = new User(name, email, password, role);
         List<User> users = Arrays.asList(user1, user2);
         UsersResponse usersResponse = new UsersResponse(users);
-        ResponseEntity<UsersResponse> responseEntity = new ResponseEntity<>(usersResponse, HttpStatus.OK);
-
         when(userService.getAllUsers()).thenReturn(users);
 
         ResponseEntity<UsersResponse> result = userRequestHandler.getAllUsers();
@@ -103,8 +99,6 @@ public class UserRequestHandlerImplTest {
     public void testGetUser() {
         User user = new User(name, email, password, role);
         UserResponse userResponse = new UserResponse(id, name, email, role);
-        ResponseEntity<UserResponse> responseEntity = new ResponseEntity<>(userResponse, HttpStatus.OK);
-
         when(userService.getUserById(any(Integer.class))).thenReturn(user);
 
         ResponseEntity<UserResponse> result = userRequestHandler.getUser(id);

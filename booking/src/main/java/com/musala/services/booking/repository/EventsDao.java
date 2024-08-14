@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.musala.services.booking.models.Event;
-import com.musala.services.booking.models.Ticket;
 
 @Repository
 public interface EventsDao extends JpaRepository<Event, Integer> {

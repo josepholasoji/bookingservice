@@ -10,6 +10,7 @@ import com.musala.services.booking.requesthandlers.UserRequestHandler;
 import com.musala.services.booking.models.Event;
 import com.musala.services.booking.models.User;
 import com.musala.services.booking.models.requests.CreateUserRequest;
+import com.musala.services.booking.models.responses.EventsResponse;
 import com.musala.services.booking.models.responses.UserResponse;
 import com.musala.services.booking.models.responses.UsersResponse;
 import com.musala.services.booking.services.UserService;
@@ -59,8 +60,9 @@ public class UserRequestHandlerImpl implements UserRequestHandler {
     }
 
     @Override
-    public List<Event> getUserRegisteredEventsById(String username) {
+    public ResponseEntity<EventsResponse> getUserRegisteredEventsById(String username) {
         User user = userService.getUserByEmail(username);
-        return userService.getUserRegisteredEventsById(user.getId());
+        List<Event> events = userService.getUserRegisteredEventsById(user.getId());
+        return new ResponseEntity<>(new EventsResponse(events), HttpStatus.OK);
     }
 }

@@ -96,7 +96,7 @@ public class UserServiceImplTest {
 
         when(userDao.createUser(user.getName(), user.getEmail(), passwordEncoder.encode(user.getPassword()),
                 user.getRole())).thenReturn(1);
-        int result = userService.createUser(user);
+        userService.createUser(user);
     }
 
     @Test

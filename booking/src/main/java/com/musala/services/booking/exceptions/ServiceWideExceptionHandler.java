@@ -55,7 +55,7 @@ public class ServiceWideExceptionHandler {
             status = HttpStatus.BAD_REQUEST;
         }
         else {
-            message = ex.getMessage();
+            message = "Error occurred while processing the request";
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 

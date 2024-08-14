@@ -7,6 +7,7 @@ import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -52,15 +53,20 @@ public class EventApiRestControllerTests {
     private static String token = null;
     private static String url = null;
 
+    @Value("${sample.user.email}")
+    private String ADMIN_EMAIL;
+    @Value("${sample.user.password}")
+    private String ADMIN_PASSWORD;
+    @Value("${sample.user.name}")
+    private String ADMIN_NAME;
+    @Value("${sample.user.role}")
+    private String ADMIN_ROLE;
+
     static final String EVENT_NAME = "Sample event";
     static final Date EVENT_DATE = new Date();
     static final String EVENT_DESCRIPTION = "a sample event";
     static final String EVENT_CATEGORY = EventCategories.Concert.toString();
     static final int EVENT_CAPACITY = 100;
-
-    static final String USER_NAME = "Sample User";
-    static final String USER_EMAIL = "sample@admin.com";
-    static final String USER_PASSWORD = "admin";
 
     @BeforeEach
     public void before() throws JsonMappingException, JsonProcessingException
@@ -71,14 +77,14 @@ public class EventApiRestControllerTests {
         url = baseUrl + "/events";
         
         if(StringUtil.isNullOrEmpty(token)){
-            User user = userService.getUserByEmail(USER_EMAIL);
+            User user = userService.getUserByEmail(ADMIN_EMAIL);
             if (user == null) {
-                userService.createUser(new User(USER_NAME, USER_EMAIL, USER_PASSWORD, UserCategories.Admin.toString()));
+                userService.createUser(new User(ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD, UserCategories.Admin.toString()));
             }
 
             RequestEntity<AuthenticationRequest> request = RequestEntity.post(authUrl)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(new AuthenticationRequest( USER_EMAIL, USER_PASSWORD));
+            .body(new AuthenticationRequest( ADMIN_EMAIL, ADMIN_PASSWORD));
 
             AuthenticationResponse response = restTemplate.exchange(request, AuthenticationResponse.class).getBody();
             assertEquals(HttpStatus.OK.value(), response.getStatus());

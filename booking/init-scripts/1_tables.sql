@@ -30,8 +30,7 @@ CREATE TABLE IF NOT EXISTS bookings(
     id int NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'Primary Key',
     user_id int NOT NULL COMMENT 'User ID',
     event_id int NOT NULL COMMENT 'Event ID',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created at',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated at'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created at'
 ) COMMENT 'User Event Booking Table';
 
 -- Event notfication table

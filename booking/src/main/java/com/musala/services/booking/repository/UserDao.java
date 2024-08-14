@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.musala.services.booking.models.Event;
+import com.musala.services.booking.models.Ticket;
 import com.musala.services.booking.models.User;
 
 @Repository
@@ -29,7 +28,4 @@ public interface UserDao extends JpaRepository<User, Integer> {
 
     @Procedure(value =  "get_user_by_email_and_password")
     public User getUserByEmailAndPassword(@Param("p_email") String email, @Param("p_password") String password);
-
-    @Procedure(value =  "get_user_events_by_id")
-    public List<Event> getUserRegisteredEventsById(@Param("p_id") int id);
 }

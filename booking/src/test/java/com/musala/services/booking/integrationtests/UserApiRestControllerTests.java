@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -16,8 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.musala.services.booking.Enums.EventCategories;
@@ -41,6 +40,7 @@ import com.musala.services.booking.services.UserService;
 import ch.qos.logback.core.util.StringUtil;
 import org.springframework.jms.core.JmsTemplate;
 
+@SuppressWarnings("null")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserApiRestControllerTests {
     @LocalServerPort
@@ -64,10 +64,18 @@ public class UserApiRestControllerTests {
     private static String token = null;
     private static String usersUrl = null, eventsUrl = null, authUrl = null;
 
-    private static final String USER_NAME = "Sample User";
-    private static final String USER_EMAIL = "sample@admin.com";
-    private static final String USER_PASSWORD = "adminadmin";
-    private static final String USER_PASSWORD_NEW = "weghh3232wew3";
+    @Value("${sample.user.email}")
+    private String ADMIN_EMAIL;
+    @Value("${sample.user.password}")
+    private String ADMIN_PASSWORD;
+    @Value("${sample.user.name}")
+    private String ADMIN_NAME;
+    @Value("${sample.user.role}")
+    private String ADMIN_ROLE;
+
+    private static final String USER_NAME = "A new sample User";
+    private static final String USER_EMAIL = "sampleemail@admin.com";
+    private static final String USER_PASSWORD = "weghh3232wew3";
 
     static final String EVENT_NAME = "Sample event";
     static final Date EVENT_DATE = new Date();
@@ -76,7 +84,6 @@ public class UserApiRestControllerTests {
     static final int EVENT_CAPACITY = 100;
 
     @BeforeEach
-    @SuppressWarnings("null")
     public void before() throws JsonMappingException, JsonProcessingException {
         String host = "http://localhost:" + port;
         String baseUrl = host + "/booking/api";
@@ -87,14 +94,14 @@ public class UserApiRestControllerTests {
         // We try to get the auth token here even though its not needed for the only
         // exposed user endpoint.
         if (StringUtil.isNullOrEmpty(token)) {
-            User user = userService.getUserByEmail(USER_EMAIL);
+            User user = userService.getUserByEmail(ADMIN_EMAIL);
             if (user == null) {
-                userService.createUser(new User(USER_NAME, USER_EMAIL, USER_PASSWORD, UserCategories.Admin.toString()));
+                userService.createUser(new User(ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD,ADMIN_ROLE));
             }
 
             RequestEntity<AuthenticationRequest> request = RequestEntity.post(authUrl)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new AuthenticationRequest(USER_EMAIL, USER_PASSWORD));
+                    .body(new AuthenticationRequest(ADMIN_EMAIL, ADMIN_PASSWORD));
 
             AuthenticationResponse response = restTemplate.exchange(request, AuthenticationResponse.class).getBody();
             assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -108,7 +115,7 @@ public class UserApiRestControllerTests {
         RequestEntity<CreateUserRequest> request = RequestEntity.post(usersUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(new CreateUserRequest(null, USER_EMAIL, USER_PASSWORD_NEW, UserCategories.Admin.toString()));
+                .body(new CreateUserRequest(null, USER_EMAIL, USER_PASSWORD, UserCategories.Admin.toString()));
 
         ExceptionResponse response = this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
@@ -121,7 +128,7 @@ public class UserApiRestControllerTests {
         RequestEntity<CreateUserRequest> request = RequestEntity.post(usersUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(new CreateUserRequest(USER_NAME, USER_EMAIL, "", UserCategories.Admin.toString()));
+                .body(new CreateUserRequest(USER_NAME, USER_EMAIL, null, UserCategories.Admin.toString()));
 
         ExceptionResponse response = this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
@@ -134,7 +141,7 @@ public class UserApiRestControllerTests {
         RequestEntity<CreateUserRequest> request = RequestEntity.post(usersUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(new CreateUserRequest(USER_NAME, "", USER_PASSWORD_NEW, UserCategories.Admin.toString()));
+                .body(new CreateUserRequest(USER_NAME, "", USER_PASSWORD, UserCategories.Admin.toString()));
 
         ExceptionResponse response = this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
@@ -150,7 +157,7 @@ public class UserApiRestControllerTests {
                 .header("Authorization", "Bearer " + token)
                 .body(new CreateUserRequest(
                         "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmsdsdsdsdsssssssssssssssssssssssssssssssss",
-                        USER_EMAIL, USER_PASSWORD_NEW, UserCategories.Admin.toString()));
+                        USER_EMAIL, USER_PASSWORD, UserCategories.Admin.toString()));
 
         ExceptionResponse response = this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
@@ -165,7 +172,7 @@ public class UserApiRestControllerTests {
                 .header("Authorization", "Bearer " + token)
                 .body(new CreateUserRequest(USER_NAME, USER_EMAIL, USER_PASSWORD, UserCategories.Admin.toString()));
 
-        this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
+        this.restTemplate.postForObject(usersUrl, request, String.class);
         ExceptionResponse response = this.restTemplate.postForObject(usersUrl, request, ExceptionResponse.class);
         assertEquals(HttpStatus.CONFLICT.value(), response.getStatus());
         assertEquals("Failed", response.getMessage());
@@ -173,8 +180,11 @@ public class UserApiRestControllerTests {
 
     @Test
     public void testUserApiControllerCreateEndpoint_ValidRequest() throws Exception {
-        // Clear all the existing users
-        userService.getAllUsers().forEach(user -> userService.deleteUser(user.getId()));
+        // Clear all the existing user
+        User user = userService.getUserByEmail(USER_EMAIL);
+        if(user != null){
+            userService.deleteUser(user.getId());
+        }
 
         // Test the create endpoint
         RequestEntity<CreateUserRequest> request = RequestEntity.post(usersUrl)
@@ -186,8 +196,7 @@ public class UserApiRestControllerTests {
         assertEquals("Success", response.getMessage());
     }
 
-    @SuppressWarnings("null")
-@Test
+    @Test
     // This test:
     // 1. creates a new user
     // 2. login the new created user and get the auth token to use for the rest of the tests
@@ -201,9 +210,9 @@ public class UserApiRestControllerTests {
     // 7.3. deletes the user
     // 8. confirms that the event has been signaled or not
     public void functionalRequirementTest() throws Exception {
-        // Clear all the existing users
-        userService.getAllUsers().forEach(user -> userService.deleteUser(user.getId()));
-
+        // Clear all the existing user
+        User user = userService.getUserByEmail(USER_EMAIL);
+        userService.deleteUser(user.getId());
         eventService.getAllEvents("").forEach(event -> eventService.deleteEventById(event.getId()));
 
         // Create a new user
@@ -217,7 +226,7 @@ public class UserApiRestControllerTests {
         assertEquals("Success", createUserRequestResponse.getMessage());
 
         // Login the user and get the auth token
-        User user = userService.getUserByEmail(USER_EMAIL);
+        user = userService.getUserByEmail(USER_EMAIL);
         if (user == null) {
             throw new UserNotFoundException("User not found");
         }
@@ -266,6 +275,17 @@ public class UserApiRestControllerTests {
         assertEquals(HttpStatus.OK.value(), ticketResponseResponse.getStatus());
         assertEquals("Success", ticketResponseResponse.getMessage());
 
+        // Confirm that the booking has been made by getting the users bookings
+        String userBookingsUrl = usersUrl + "/events";
+        HttpHeaders userBookingsUrlHeader = new HttpHeaders();
+        userBookingsUrlHeader.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entityBookingEntries = new HttpEntity<>(userBookingsUrlHeader);
+
+        TicketsResponse userBookingsResponse = this.restTemplate.exchange(userBookingsUrl, HttpMethod.GET, entityBookingEntries, TicketsResponse.class).getBody();
+        assertEquals(HttpStatus.OK.value(), userBookingsResponse.getStatus());
+        assertEquals("Success", userBookingsResponse.getMessage());
+        assertEquals(1, userBookingsResponse.getData().size());
+
         // register and wait for the event to start...
         notificationService.registerEventNotification(createUserRequestResponse.getData().getId(),
                 createEventRequestResponse.getData().getId(), (userId, eventId, ticket) -> {
@@ -279,21 +299,24 @@ public class UserApiRestControllerTests {
 
                     // Confirm that the booking has been deleted by getting the users bookings and
                     // checking that the booking is not there
-                    String userBookingsUrl = usersUrl + "/events";
-                    HttpHeaders userBookingsUrlHeader = new HttpHeaders();
-                    userBookingsUrlHeader.set("Authorization", "Bearer " + token);
-                    HttpEntity<String> entityBookingEntries = new HttpEntity<>(userBookingsUrlHeader);
+                    String _userBookingsUrl = usersUrl + "/events";
+                    HttpHeaders _userBookingsUrlHeader = new HttpHeaders();
+                    _userBookingsUrlHeader.set("Authorization", "Bearer " + token);
+                    HttpEntity<String> _entityBookingEntries = new HttpEntity<>(_userBookingsUrlHeader);
 
-                    TicketsResponse userBookingsResponse = this.restTemplate.exchange(userBookingsUrl, HttpMethod.GET, entityBookingEntries, TicketsResponse.class).getBody();
-                    assertEquals(HttpStatus.OK.value(), userBookingsResponse.getStatus());
-                    assertEquals("Success", userBookingsResponse.getMessage());
-                    assertEquals(0, userBookingsResponse.getData().size());
+                    TicketsResponse _userBookingsResponse = this.restTemplate.exchange(_userBookingsUrl, HttpMethod.GET, _entityBookingEntries, TicketsResponse.class).getBody();
+                    assertEquals(HttpStatus.OK.value(), _userBookingsResponse.getStatus());
+                    assertEquals("Success", _userBookingsResponse.getMessage());
+                    assertEquals(0, _userBookingsResponse.getData().size());
 
                     // Delete the user
-                    userService.deleteUser(userId);
+                    User notifiedUser = userService.getUserById(userId);
+                    if(notifiedUser != null && notifiedUser.getEmail().equalsIgnoreCase(USER_EMAIL)){
+                        userService.deleteUser(userId);
 
-                    // Delete the events
-                    eventService.deleteEventById(eventId);
+                        // Delete the events
+                        eventService.deleteEventById(eventId);
+                    }
                 });
 
         // Wait for 5 seconds for the event to start

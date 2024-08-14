@@ -146,8 +146,8 @@ BEGIN
     IF localId IS NOT NULL THEN
         SET p_id = localId;
     ELSE
-        INSERT INTO bookings(event_id, user_id, created_at, updated_at)
-        VALUES(p_event_id, p_user_id, NOW(), NOW());
+        INSERT INTO bookings(event_id, user_id, created_at)
+        VALUES(p_event_id, p_user_id, NOW());
         SET p_id = LAST_INSERT_ID();
     END IF;
 END$$
