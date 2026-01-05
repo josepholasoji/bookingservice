@@ -1,4 +1,4 @@
-**Musalasoft Event Booking App:**
+**Event Booking App:**
 
 FUNTIONAL REQUIREMENTS:
 
