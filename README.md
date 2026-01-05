@@ -1,5 +1,7 @@
 **Event Booking App:**
 
+A Spring Boot–based event booking and notification system that allows users to register, authenticate, create events, search and book tickets, and receive event notifications. The application is built with Java 17, Maven, Docker Compose, MariaDB, and ActiveMQ, includes unit and integration tests, preloaded sample data, and exposes RESTful JSON APIs for user, event, booking, and authentication workflows.
+
 FUNTIONAL REQUIREMENTS:
 
 1.  Create an account;
